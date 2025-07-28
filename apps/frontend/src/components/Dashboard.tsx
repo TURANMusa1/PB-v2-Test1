@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { authService } from '../services/auth';
+import { candidateService } from '../services/candidate';
 import type { User } from '../services/auth';
+import type { CandidateStatistics } from '../types/candidate';
+import CandidateList from './CandidateList';
 
 interface DashboardProps {
   onLogout: () => void;
@@ -9,6 +12,7 @@ interface DashboardProps {
 const Dashboard = ({ onLogout }: DashboardProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState<CandidateStatistics | null>(null);
 
   useEffect(() => {
     const currentUser = authService.getCurrentUser();
@@ -16,6 +20,19 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
       setUser(currentUser);
     }
     setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    const loadStats = async () => {
+      try {
+        const response = await candidateService.getStatistics();
+        setStats(response.data);
+      } catch (error) {
+        console.error('Failed to load statistics:', error);
+      }
+    };
+
+    loadStats();
   }, []);
 
   const handleLogout = async () => {
@@ -75,7 +92,7 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           {/* Welcome Card */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
@@ -90,7 +107,7 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
                     Welcome back, {user?.name}!
                   </h2>
                   <p className="text-gray-600 text-sm">
-                    Your Applicant Tracking System is ready for development.
+                    Manage your candidates and track applications.
                   </p>
                 </div>
               </div>
@@ -101,7 +118,7 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-xs font-medium text-indigo-600">Total Candidates</p>
-                      <p className="text-xl font-bold text-gray-900">0</p>
+                      <p className="text-xl font-bold text-gray-900">{stats?.total || 0}</p>
                     </div>
                     <div className="h-6 w-6 bg-indigo-100 rounded-md flex items-center justify-center">
                       <svg className="h-4 w-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -114,12 +131,12 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
                 <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs font-medium text-green-600">Active Jobs</p>
-                      <p className="text-xl font-bold text-gray-900">0</p>
+                      <p className="text-xs font-medium text-green-600">New Applications</p>
+                      <p className="text-xl font-bold text-gray-900">{stats?.by_status?.new || 0}</p>
                     </div>
                     <div className="h-6 w-6 bg-green-100 rounded-md flex items-center justify-center">
                       <svg className="h-4 w-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2V6" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                       </svg>
                     </div>
                   </div>
@@ -169,8 +186,8 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
                   <span className="text-xs text-gray-700">✅ Auth system (Sanctum + React Login)</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <div className="h-2 w-2 bg-gray-300 rounded-full"></div>
-                  <span className="text-xs text-gray-500">⏳ Candidate model and CRUD operations</span>
+                  <div className="h-2 w-2 bg-green-500 rounded-full"></div>
+                  <span className="text-xs text-gray-700">✅ Candidate model and CRUD operations</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <div className="h-2 w-2 bg-gray-300 rounded-full"></div>
@@ -188,6 +205,9 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
             </div>
           </div>
         </div>
+
+        {/* Candidates List */}
+        <CandidateList />
       </main>
     </div>
   );

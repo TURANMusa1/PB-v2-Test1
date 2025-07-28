@@ -4,38 +4,126 @@ Modern bir Applicant Tracking System (ATS) projesi. Laravel 12 backend ve React 
 
 ## 📋 Proje Durumu
 
-### ✅ Tamamlanan Özellikler (Aşama 1)
-- [x] **Auth Sistemi (Sanctum + React Login)**
-  - Laravel Sanctum ile token tabanlı authentication
-  - React frontend ile login/register formları
-  - Modern UI tasarımı (Tailwind CSS)
-  - Protected routes ve auth state management
+### ✅ Tamamlanan Özellikler
+
+#### 🎯 Aşama 1: Authentication System
+- [x] **Laravel Sanctum Authentication**
+  - Token tabanlı authentication
+  - Login/Register API endpoints
+  - Protected routes
+- [x] **React Frontend Auth**
+  - Modern login/register formları
+  - Auth state management
+  - Protected routes ve redirects
+- [x] **Modern UI Design**
+  - Tailwind CSS v4 ile modern tasarım
+  - Responsive layout
+  - Clean ve minimal interface
+
+#### 🎯 Aşama 2: Candidate Management
+- [x] **Candidate Model & Migration**
+  - Complete candidate schema
+  - File upload support (resume)
+  - Status management (new, reviewed, shortlisted, interviewed, hired, rejected)
+- [x] **CRUD Operations**
+  - Create, Read, Update, Delete candidates
+  - Form validation (frontend & backend)
+  - File upload handling
+- [x] **Candidate List & Search**
+  - Paginated candidate listing
+  - Status filtering
+  - Search functionality
+  - Sort by date/name
+
+#### 🎯 Aşama 3: Search Integration
+- [x] **Laravel Scout Integration**
+  - Database driver configuration
+  - Search indexing
+  - Real-time search capabilities
+- [x] **Search UI Components**
+  - SearchBar component
+  - Manual search with Enter key
+  - Search results display
+  - Clear search functionality
+
+#### 🎯 Aşama 4: Advanced UI & UX
+- [x] **Candidate Form**
+  - Comprehensive form with all fields
+  - File upload for resumes
+  - Client-side validation
+  - Loading states
+- [x] **Modal System**
+  - Reusable Modal component
+  - Form integration
+  - Responsive design
+- [x] **Notification System**
+  - Success/Error notifications
+  - Auto-dismiss functionality
+  - Toast-style notifications
+- [x] **Enhanced UX**
+  - Page reload after successful operations
+  - Loading indicators
+  - Error handling
+  - User feedback
 
 ### 🔄 Geliştirme Aşamaları
-- [ ] **Aşama 2:** Aday modeli ve CRUD işlemleri
-- [ ] **Aşama 3:** Meilisearch ile canlı arama
-- [ ] **Aşama 4:** Tailwind ile UI geliştirme
-- [ ] **Aşama 5:** Queue + Redis ile başvuru sonrası e-posta
-- [ ] **Aşama 6:** Websocket ile canlı bildirim
-- [ ] **Aşama 7:** AI destekli CV sıralama
+
+#### 🚧 Aşama 5: Job Postings (Devam Ediyor)
+- [ ] Job model ve migration
+- [ ] Job CRUD operations
+- [ ] Job listing sayfası
+- [ ] Job application form
+
+#### 📋 Planlanan Aşamalar
+- [ ] **Aşama 6:** Applications (Başvurular)
+  - Application model (Candidate + Job ilişkisi)
+  - Application tracking
+  - Status management
+
+- [ ] **Aşama 7:** Dashboard Analytics
+  - Charts ve grafikler
+  - Statistics dashboard
+  - Performance metrics
+
+- [ ] **Aşama 8:** Advanced Features
+  - Email notifications
+  - File management
+  - Export/Import
+  - Advanced search filters
 
 ## 🛠️ Teknoloji Stack'i
 
 | Katman       | Teknoloji                    | Açıklama |
 |--------------|-------------------------------|----------|
 | Frontend     | React + Vite + TypeScript     | Hızlı geliştirme, modülerlik |
-| Styling      | Tailwind CSS                  | Minimal, utility-first CSS |
+| Styling      | Tailwind CSS v4               | Modern utility-first CSS |
 | Backend      | Laravel 12 + Sanctum          | API, auth, job sistemi |
 | Veritabanı   | SQLite (Development)          | Gelişmiş filtreleme |
 | Auth         | Laravel Sanctum               | SPA için token tabanlı auth |
+| Search       | Laravel Scout (Database)      | Real-time search |
+| File Upload  | Laravel Storage               | Resume upload handling |
 
 ## 📁 Proje Yapısı
 
 ```
 /peoplebox-v2/
 ├── apps/
-│   ├── frontend/         → React + Vite + TS (Tailwind)
+│   ├── frontend/         → React + Vite + TS (Tailwind v4)
+│   │   ├── src/
+│   │   │   ├── components/  → UI Components
+│   │   │   ├── services/    → API Services
+│   │   │   ├── types/       → TypeScript Types
+│   │   │   └── App.tsx      → Main App
+│   │   └── package.json
 │   └── backend/          → Laravel 12
+│       ├── app/
+│       │   ├── Models/       → Eloquent Models
+│       │   ├── Http/
+│       │   │   ├── Controllers/  → API Controllers
+│       │   │   └── Requests/     → Form Requests
+│       │   └── ...
+│       ├── database/migrations/   → Database Migrations
+│       └── routes/api.php         → API Routes
 ├── packages/
 │   └── shared-types/     → Ortak Type tanımları
 ├── docker/               → PostgreSQL, Redis, Meilisearch için docker-compose
@@ -68,7 +156,7 @@ Backend: http://localhost:8000
 cd apps/frontend
 
 # Gerekli paketler zaten yüklü
-# React Router, Axios, Tailwind CSS kurulu
+# React Router, Axios, Tailwind CSS v4 kurulu
 
 # Development server'ı başlat
 npm run dev
@@ -84,6 +172,15 @@ Frontend: http://localhost:5173
 - `POST /api/logout` - Çıkış (Auth gerekli)
 - `GET /api/profile` - Kullanıcı profili (Auth gerekli)
 
+### Candidate Endpoints
+- `GET /api/candidates` - Aday listesi (filtreleme, arama, sayfalama)
+- `POST /api/candidates` - Yeni aday oluşturma
+- `GET /api/candidates/{id}` - Aday detayı
+- `PUT /api/candidates/{id}` - Aday güncelleme
+- `DELETE /api/candidates/{id}` - Aday silme
+- `GET /api/candidates-statistics` - Aday istatistikleri
+- `GET /api/candidates-search` - Aday arama
+
 ### Örnek Kullanım
 
 ```bash
@@ -92,18 +189,37 @@ curl -X POST http://localhost:8000/api/login \
   -H "Content-Type: application/json" \
   -d '{"email":"user@example.com","password":"password"}'
 
-# Register
-curl -X POST http://localhost:8000/api/register \
-  -H "Content-Type: application/json" \
-  -d '{"name":"John Doe","email":"john@example.com","password":"password","password_confirmation":"password"}'
+# Get Candidates
+curl -X GET http://localhost:8000/api/candidates \
+  -H "Authorization: Bearer {token}"
+
+# Create Candidate
+curl -X POST http://localhost:8000/api/candidates \
+  -H "Authorization: Bearer {token}" \
+  -F "first_name=John" \
+  -F "last_name=Doe" \
+  -F "email=john@example.com" \
+  -F "status=new"
 ```
 
 ## 🎨 Frontend Bileşenleri
 
+### Auth Components
 - `<Login />` - Giriş ekranı
 - `<Register />` - Kayıt ekranı
 - `<Dashboard />` - Ana dashboard
-- API servisleri ve auth state management
+
+### Candidate Components
+- `<CandidateList />` - Aday listesi ve CRUD
+- `<CandidateForm />` - Aday ekleme/düzenleme formu
+- `<SearchBar />` - Arama bileşeni
+- `<Modal />` - Modal dialog bileşeni
+- `<Notification />` - Bildirim bileşeni
+
+### Services
+- `authService` - Authentication işlemleri
+- `candidateService` - Candidate CRUD işlemleri
+- `searchService` - Arama işlemleri
 
 ## 🔧 Geliştirme Notları
 
@@ -112,12 +228,18 @@ curl -X POST http://localhost:8000/api/register \
 - Sanctum ile SPA authentication
 - CORS ayarları frontend için yapılandırıldı
 - API response formatları standardize edildi
+- Form Request validation ile güvenli veri işleme
+- File upload handling (resume dosyaları)
+- Laravel Scout ile search functionality
 
 ### Frontend
 - React Router ile SPA routing
 - Axios interceptors ile auth token yönetimi
-- Tailwind CSS ile modern UI
+- Tailwind CSS v4 ile modern UI
 - TypeScript ile type safety
+- FormData ile file upload
+- Notification system ile user feedback
+- Responsive design
 
 ## 📝 Commit Mesajları
 
@@ -127,14 +249,26 @@ Proje geliştirme sürecinde kullanılan commit mesaj formatı:
 feat: candidate create form completed
 fix: meilisearch typo match issue
 chore: added Redis queue and tested email jobs
+feat: notification system implemented
+fix: update candidate validation issues
 ```
 
 ## 🎯 Sonraki Adımlar
 
-1. **Aşama 2:** Candidate modeli ve migration'ları
-2. **Aşama 3:** Meilisearch kurulumu ve konfigürasyonu
-3. **Aşama 4:** Candidate CRUD bileşenleri
-4. **Aşama 5:** Queue sistemi ve e-posta işlemleri
+1. **Aşama 5:** Job Postings sistemi
+   - Job model ve migration
+   - Job CRUD operations
+   - Job listing ve application form
+
+2. **Aşama 6:** Applications sistemi
+   - Application model (Candidate + Job ilişkisi)
+   - Application tracking
+   - Status management
+
+3. **Aşama 7:** Dashboard Analytics
+   - Charts ve grafikler
+   - Statistics dashboard
+   - Performance metrics
 
 ## 🤝 Katkıda Bulunma
 
